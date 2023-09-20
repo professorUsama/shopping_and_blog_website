@@ -1,0 +1,1 @@
+Hello this is the blog static file . thanks for visiting.

@@ -1,0 +1,115 @@
+{%extends 'shop/basic.html'%}
+
+{%block title%} Checkout {%endblock%}
+
+{%block body%}
+
+<div class="container">
+    <div class="col my-4">
+        <h2>You Can Track your order by using order id and crossponding email</h2>
+        <form method="post" action="#" id="formData"> {%csrf_token%}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="name">Order Id</label>
+                    <input type="text" class="form-control" id="orderid" name="orderid" placeholder="Put Order Id"
+                        required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
+                <button type="submit" class="btn btn-dark"><b>Track Order</b></button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col my-4">
+        <h2>Your Order Status</h2>
+        <div>
+            <ul class="list-group my-4" id="items">
+
+            </ul>
+        </div>
+
+    </div>
+
+
+    <div class="col my-4">
+        <h2>Your Purchased Items</h2>
+        <div>
+            <ul class="list-group my-4" id="showItems">
+                <p>Your purchased Items will shown here.</p>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+{%endblock%}
+
+{%block js%}
+
+<script>
+
+    // id="formData" this id for send user data to checking order status
+    $('#formData').submit(function (event) {
+
+        // empty list before showing order status
+        $('#items').empty();
+
+        // a user form data store in a js object
+        var formData = {
+            'orderid': $('input[name=orderid]').val(),
+            'email': $('input[name=email]').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/shop/tracker/",
+            data: formData,
+            encode: true,
+        })
+            .done(function (recevied_data) {
+                let data = JSON.parse(recevied_data)
+                let orderUpdateForCustomer = data[0]
+                if ((orderUpdateForCustomer.length > 0) & (orderUpdateForCustomer != {})) {
+                    for (let i = 0; i < orderUpdateForCustomer.length; i++) {
+                        let order_description = orderUpdateForCustomer[i]['text'];
+                        let update_time = orderUpdateForCustomer[i]['time'];
+                        let date = new Date(update_time);
+                        let longDate = date.toLocaleDateString("en-us", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+                        $('#items').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <b>${orderUpdateForCustomer[i]['text']}</b>
+                        <span class="badge badge-success badge-pill">${longDate}</span>
+                    </li>`);
+                    }
+                }
+                else {
+                    $('#items').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                    <b>Dear Customer, Your order not found according to your Order id and your Email.
+                        Make sure you put correct information about your order. Thanks</b></li>`);
+                }
+                //empty list before placing customer products in list.
+                $('#showItems').empty();
+                let purchased_items = JSON.parse(data[1]);
+                for (let each_item in purchased_items) {
+                    $('#showItems').append(
+                        `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <b>${purchased_items[each_item][1]}</b>
+                        <span class="badge badge-success badge-pill">${purchased_items[each_item][0]}</span>
+                    </li>`
+                    );
+
+                }
+
+            });
+
+        // event.preventDefault() this method is used to stop the reload page
+        event.preventDefault();
+    });
+</script>
+
+
+{%endblock%}

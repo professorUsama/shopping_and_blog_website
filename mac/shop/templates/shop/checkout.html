@@ -1,0 +1,138 @@
+{%extends 'shop/basic.html'%}
+
+{%block title%} Checkout {%endblock%}
+
+{%block css%}
+th{
+text-align: center;
+}
+
+td{
+text-align: center;
+}
+{%endblock%}
+
+{%block body%}
+
+<div class="container">
+    <div class="col my-4">
+        <h2>Step 1- Shopping With Usama Express - Review your Cart Items</h2>
+        <div id="tableDiv">
+            <table class="table table-bordered my-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Product Quantity</th>
+                        <th scope="col">Product Price</th>
+                    </tr>
+                </thead>
+                <tbody id="items">
+
+                </tbody>
+            </table>
+            <ul class="list-group" id="totalPrice">
+                
+            </ul>
+        </div>
+    </div>
+
+    <div class="col my-4">
+        <h2>Step 2- Fill information for placing order</h2>
+        <form method="post" action="/shop/checkout/"> {%csrf_token%}
+            <input type="hidden" id="itemsJson" name="itemsJson">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="name">Name</label>
+                    <input type="name" class="form-control" id="name" name="name" placeholder="Name" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address1">Address</label>
+                <input type="text" class="form-control" id="address1" name="address1" placeholder="Address 1" required>
+            </div>
+            <div class="form-group">
+                <label for="address2">Address Line 2</label>
+                <input type="text" class="form-control" id="address2" name="address2" placeholder="Address Line 2">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" id="state" name="state" placeholder="State" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="phone">Phone</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label for="zip_code">Zip</label>
+                    <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="Enter Zip Code"
+                        required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline-dark btn-lg"><b>Place Order</b></button>
+        </form>
+    </div>
+</div>
+
+{%endblock%}
+
+{%block js%}
+
+<script>
+    if (localStorage.getItem('cart') == null) {
+        cart = {};
+    }
+    else {
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    var sum = 0
+
+    //check if cart is empty using jquery
+
+    if ($.isEmptyObject(cart)) {
+        $('#tableDiv').append(`<h6>Your cart is empty. Please add some products before placing order. Thanks :)</h6>`)
+        document.getElementById('cart').innerHTML = `Carts(${sum}`;
+    }
+
+    else {
+        let total = 0;
+        for (let item in cart) {
+            total = total + cart[item][2] * cart[item][0];
+            sum = sum + cart[item][0]
+            $('#items').append(`
+            <tr>
+                <td>${cart[item][1]}</td>
+                <td>${cart[item][0]}</td>
+                <td>${cart[item][2]} x ${cart[item][0]} = ${cart[item][2] * cart[item][0]}</td>
+            </tr>
+            `);
+        }
+        //Display the items in the cart on the cart button in the navbar
+        document.getElementById('cart').innerHTML = `Carts(${sum})`;
+        $('#totalPrice').append(`
+        <li class="list-group-item d-flex justify-content-between align-items-center mb-4">
+            <b>Your Total Bill</b>
+            <span class="badge badge-dark badge-pill">Rs. <span>${total}</span></span>
+        </li>
+        `);
+    }
+    $('#itemsJson').val(JSON.stringify(cart));
+    {% if thanks %}
+    alert("Thanks for order. You can track your order by using order id. Order id is : {{id}}");
+    localStorage.clear()
+    document.location = "/shop";
+    {% endif %}
+</script>
+
+
+{%endblock%}

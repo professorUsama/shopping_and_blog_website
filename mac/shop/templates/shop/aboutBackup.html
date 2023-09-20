@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>This is the about section</h1>
+    <h2>Llist all product here.</h2>
+
+    <div class="container">
+        <table class="table table-striped" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Category</th>
+                    <th>Sub Category</th>
+                    <th>Product Price</th>
+                    <th>Product Description</th>
+                    <th>Publish Date</th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for products in data %}
+                <tr>
+                    <td>{{products.product_name}}</td>
+                    <td>{{products.category}}</td>
+                    <td>{{products.subcategory}}</td>
+                    <td>{{products.price}}</td>
+                    <td>{{products.product_description}}</td>
+                    <td>{{products.publish_date}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

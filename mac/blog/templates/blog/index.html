@@ -1,0 +1,31 @@
+{% extends 'blog/basic.html' %}
+
+{%block title%}Blog{%endblock%}
+
+{%block body%}
+
+<div class="container mt-3">
+  <div class="row mb-2">
+    {%for p in postData%}
+    <div class="col-md-6">
+      <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-success">{{p.title}}</strong>
+          <h3 class="mb-0">{{p.heading0}}</h3>
+          <div class="mb-1 text-muted">{{p.publish_date}}</div>
+          <p class="card-text mb-auto">{{p.content0| slice:"0:60"}}...</p>
+          <!--method 1-->
+          <a href="blogpost/{{p.post_id}}" class="stretched-link">Continue reading</a>
+          <!--method 2-->
+          <!--<a href={% url 'blogpost' p.post_id %} class="stretched-link">Continue reading</a> -->
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <img src="/media/{{p.post_thumbnail}}" width="200" height="200">
+          <title>Placeholder</title>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+{%endblock%}
