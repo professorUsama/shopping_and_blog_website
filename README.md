@@ -35,4 +35,4 @@ This is a web application built using Python Django for creating a shopping webs
    git clone https://github.com/professorUsama/shopping_and_blog_website.git
 
 ## Join My Facebook Group Community
-[here](https://web.facebook.com/groups/python.javascript.react.linux.cpp.programming).
+[join](https://web.facebook.com/groups/python.javascript.react.linux.cpp.programming).
